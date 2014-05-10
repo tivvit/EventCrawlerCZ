@@ -15,12 +15,12 @@
 # limitations under the License.
 #
 import os
+import webapp2
+import jinja2
 
 from google.appengine.api import users
 from google.appengine.api import urlfetch
-
-import webapp2
-import jinja2
+from BeautifulSoup import BeautifulSoup
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -31,16 +31,19 @@ class MainHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
 
-        srazy = u""
-        url = "http://google.com/"
+        url = "http://google.com"
         result = urlfetch.fetch(url)
         if result.status_code == 200:
             content = self.getEncodedContent(result)
 
+
+        soup = BeautifulSoup(content)
+
         if user:
             template_values = {
                 'user': user.nickname(),
-                'loaded': content
+                'loaded': content,
+                'links': soup.findAll('a')
             }
         else:
             self.redirect(users.create_login_url(self.request.uri))

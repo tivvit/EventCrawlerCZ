@@ -16,6 +16,12 @@
 
     {{ user }}
 
-  {{loaded}}
+
+
+  {% for link in links %}
+      <blockquote>{{ link.get('href') }}</blockquote>
+  {% endfor %}
+
+    {{loaded}}
   </body>
 </html>
