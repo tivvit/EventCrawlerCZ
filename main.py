@@ -17,7 +17,7 @@
 import os
 
 from google.appengine.api import users
-
+from google.appengine.api import urlfetch
 
 import webapp2
 import jinja2
@@ -25,15 +25,22 @@ import jinja2
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=['jinja2.ext.autoescape'],
-    autoescape=True)
+    autoescape=False)
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
 
+        srazy = u""
+        url = "http://google.com/"
+        result = urlfetch.fetch(url)
+        if result.status_code == 200:
+            content = self.getEncodedContent(result)
+
         if user:
             template_values = {
-                'user': user.nickname()
+                'user': user.nickname(),
+                'loaded': content
             }
         else:
             self.redirect(users.create_login_url(self.request.uri))
@@ -41,6 +48,15 @@ class MainHandler(webapp2.RequestHandler):
 
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
+
+    def getEncodedContent(self, result):
+        '''
+            bleh
+        '''
+        content_type = result.headers['Content-Type'] # figure out what you just fetched
+        ctype, charset = content_type.split(';')
+        encoding = charset[len(' charset='):] # get the encoding
+        return result.content.decode(encoding) # now you have unicode
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler)
