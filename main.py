@@ -36,8 +36,8 @@ class MainHandler(webapp2.RequestHandler):
 
         events = []
 
-        #bizit = bizitParser()
-        #events = bizit.structuredEvents
+        bizit = bizitParser()
+        events = bizit.structuredEvents
         srazyinfo = srazyinfoParser()
         events = events + srazyinfo.structuredEvents
         self.template_values['events'] = events

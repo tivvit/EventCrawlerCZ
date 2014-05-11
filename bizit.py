@@ -55,7 +55,10 @@ class bizitParser():
                 if event['url'] == url:
                     soup = BeautifulSoup(EncodingHelper.getEncodedContent(result))
                     baseElement = soup.find('div',  attrs={"class": "node-inner odd"})
-                    event['text'] = baseElement.findChild('div', attrs={"class": "detail clearfix"})
+                    text = ""
+                    for p in baseElement.findChild('div', attrs={"class": "detail clearfix"}).findChildren('p'):
+                        text += "<p>"+p.text+"</p>"
+                    event['text'] = text
                     event['date'] = baseElement.findChild('div', attrs={"class": "submitted"}).contents[3].strip()
             return 0
         except urlfetch.DownloadError:

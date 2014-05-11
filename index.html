@@ -17,12 +17,14 @@
     {{ user }}
 
     {% for event in events %}
-    <div>
+    <div class="event">
+        <img src="{{event['img']}}" />
         <h2><a href="{{event['url']}}">{{ event['title'] }}</a></h2>
         <h3>{{event['place']}}</h3>
-        <p>{{event['source']}}</p>
-        <p>{{event['date']}}</p>
-        <p><img src="{{event['img']}}" />{{event['text']}}</p>
+        <h3>{{event['date']}}</h3>
+        <p>{{event['text']}}</p>
+        <div class="clearfix"></div>
+        <p class="source"><a href="{{event['source']}}">{{event['source']}}</a></p>
     </div>
     {% endfor %}
 </body>
