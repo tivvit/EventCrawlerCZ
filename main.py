@@ -19,6 +19,7 @@ import webapp2
 import jinja2
 
 from bizit import bizitParser
+from srazyinfo import srazyinfoParser
 
 from google.appengine.api import users
 
@@ -33,8 +34,13 @@ class MainHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
 
-        bizit = bizitParser()
-        self.template_values['events'] = bizit.structuredEvents
+        events = []
+
+        #bizit = bizitParser()
+        #events = bizit.structuredEvents
+        srazyinfo = srazyinfoParser()
+        events = events + srazyinfo.structuredEvents
+        self.template_values['events'] = events
 
         if user:
             self.template_values['user'] = user.nickname()
