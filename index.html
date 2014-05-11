@@ -21,7 +21,7 @@
         <img src="{{event['img']}}" />
         <h2><a href="{{event['url']}}">{{ event['title'] }}</a></h2>
         <h3>{{event['place']}}</h3>
-        <h3>{{event['date']}}</h3>
+        <h3>{{ event['date'].strftime("%d.%m.%Y") }}</h3>
         <p>{{event['text']}}</p>
         <div class="clearfix"></div>
         <p class="source"><a href="{{event['source']}}">{{event['source']}}</a></p>

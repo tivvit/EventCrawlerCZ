@@ -1,0 +1,4 @@
+cron:
+- description: check events
+  url: /crawl
+  schedule: every 4 hours

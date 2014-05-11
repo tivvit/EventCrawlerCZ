@@ -24,6 +24,7 @@ from srazyinfo import srazyinfoParser
 from google.appengine.ext import ndb
 from google.appengine.api import users
 from event import Event
+from datetime import datetime
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -38,7 +39,8 @@ class MainHandler(webapp2.RequestHandler):
 
         eventlist = self.request.get('eventlist', "event")
 
-        q = Event.query(ancestor=ndb.Key("events", eventlist)).order(-Event.date)
+        #ndb.AND(Event.date != None, Event.date > datetime.now().date())
+        q = Event.query(ancestor=ndb.Key("events", eventlist), filters=Event.date != None).order(Event.date)
         events = q.fetch(15)
 
         self.template_values['events'] = events
