@@ -60,7 +60,7 @@ class bizitParser():
                     for p in baseElement.findChild('div', attrs={"class": "detail clearfix"}).findChildren('p'):
                         text += "<p>"+p.text+"</p>"
                     event['text'] = text
-                    event['date'] = datetime.strptime(baseElement.findChild('div', attrs={"class": "submitted"}).contents[3].strip(), "%d.%m.%Y")
+                    event['date'] = datetime.strptime(baseElement.findChild('div', attrs={"class": "submitted"}).contents[3].strip(), "%d.%m.%Y").date()
             return 0
         except urlfetch.DownloadError:
                 self.response.write("chyba stahovani")

@@ -21,8 +21,9 @@ import jinja2
 
 from bizit import bizitParser
 from srazyinfo import srazyinfoParser
-
+from google.appengine.ext import ndb
 from google.appengine.api import users
+from event import Event
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -35,12 +36,11 @@ class MainHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
 
-        events = []
+        eventlist = self.request.get('eventlist', "event")
 
-        bizit = bizitParser()
-        events = bizit.structuredEvents
-        srazyinfo = srazyinfoParser()
-        events = events + srazyinfo.structuredEvents
+        q = Event.query(ancestor=ndb.Key("events", eventlist)).order(-Event.date)
+        events = q.fetch(15)
+
         self.template_values['events'] = events
 
         if user:
@@ -51,7 +51,35 @@ class MainHandler(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(self.template_values))
 
+class CrawlHandler(webapp2.RedirectHandler):
+    def get(self):
+        events = []
+        bizit = bizitParser()
+        events = bizit.structuredEvents
+        srazyinfo = srazyinfoParser()
+        events = events + srazyinfo.structuredEvents
+
+        self.response.write(events)
+
+        for e in events:
+            eventlist = self.request.get('eventlist', "event")
+            event = Event(parent=ndb.Key("events", eventlist))
+
+            q = Event.query(filters=e['url'] == Event.url, ancestor=ndb.Key("events", eventlist))
+
+            eventFound = q.fetch(1)
+            if(len(eventFound) == 0):
+                event.url = e['url']
+                event.title = e['title']
+                event.img = e['img']
+                event.place = e['place']
+                event.text = e['text']
+                event.source = e['source']
+                if e['date'] is not None:
+                    event.date = e['date']
+                event.put()
+
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/crawl', MainHandler)
+    ('/crawl', CrawlHandler)
 ], debug=True)

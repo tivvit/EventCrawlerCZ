@@ -31,8 +31,13 @@ class srazyinfoParser():
                     structuredEvent['url'] = self.url+mediaBody.findChild('h4').findChild('a').get('href')
                     structuredEvent['title'] = mediaBody.findChild('h4').findChild('a').string
                     structuredEvent['img'] = self.url+event.findChild('img').get('src')
-                    structuredEvent['date'] = mediaBody.findChild('span', attrs={"class": "stream-event-meta"}).string
-                    structuredEvent['text'] = mediaBody.findChild('p').string
+                    datestr = str(mediaBody.findChild('span', attrs={"class": "stream-event-meta"}).string).strip().translate(None, ' ')
+                    if datestr != 'None':
+                        structuredEvent['date'] = datetime.strptime(datestr, "%d.%m.%Y").date()
+                    else:
+                        structuredEvent['date'] = None
+                    structuredEvent['text'] = mediaBody.findChild('p').string.strip()
+                    structuredEvent['place'] = ''
                     self.structuredEvents.append(structuredEvent)
 
                     '''
@@ -60,7 +65,8 @@ class srazyinfoParser():
                     soup = BeautifulSoup(EncodingHelper.getEncodedContent(result))
                     baseElement = soup.find('div',  attrs={"class": "node-inner odd"})
                     event['text'] = baseElement.findChild('div', attrs={"class": "detail clearfix"})
-                    event['date'] = datetime.strptime(baseElement.findChild('div', attrs={"class": "submitted"}).contents[3].strip(), "%d.%m.%Y")
+                    date = str(baseElement.findChild('div', attrs={"class": "submitted"}).contents[3]).strip()
+                    event['date'] = datetime.strptime(date, "%d.%m.%Y").date()
             return 0
         except urlfetch.DownloadError:
                 self.response.write("chyba stahovani")
