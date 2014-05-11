@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import cgi
 import os
 import webapp2
 import jinja2
@@ -51,5 +52,6 @@ class MainHandler(webapp2.RequestHandler):
         self.response.write(template.render(self.template_values))
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', MainHandler),
+    ('/crawl', MainHandler)
 ], debug=True)

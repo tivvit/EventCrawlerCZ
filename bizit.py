@@ -4,6 +4,7 @@ import EncodingHelper
 
 from google.appengine.api import urlfetch
 from BeautifulSoup import BeautifulSoup
+from datetime import datetime
 
 
 class bizitParser():
@@ -59,7 +60,7 @@ class bizitParser():
                     for p in baseElement.findChild('div', attrs={"class": "detail clearfix"}).findChildren('p'):
                         text += "<p>"+p.text+"</p>"
                     event['text'] = text
-                    event['date'] = baseElement.findChild('div', attrs={"class": "submitted"}).contents[3].strip()
+                    event['date'] = datetime.strptime(baseElement.findChild('div', attrs={"class": "submitted"}).contents[3].strip(), "%d.%m.%Y")
             return 0
         except urlfetch.DownloadError:
                 self.response.write("chyba stahovani")
