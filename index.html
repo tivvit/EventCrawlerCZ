@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
-    <link type="text/css" rel="stylesheet" href="/css/main.css" />
-  </head>
-  <body>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+</head>
+<body>
     {#% for greeting in greetings %}
-      {% if greeting.author %}
-        <b>{{ greeting.author.nickname() }}</b> wrote:
-      {% else %}
-       An anonymous person wrote:
-      {% endif %}
-      <blockquote>{{ greeting.content }}</blockquote>
+    {% if greeting.author %}
+    <b>{{ greeting.author.nickname() }}</b> wrote:
+    {% else %}
+    An anonymous person wrote:
+    {% endif %}
+    <blockquote>{{ greeting.content }}</blockquote>
     {% endfor %#}
 
     {{ user }}
 
-
-
-  {% for link in links %}
-      <blockquote>{{ link.get('href') }}</blockquote>
-  {% endfor %}
-
-    {{loaded}}
-  </body>
+    {% for event in events %}
+    <div>
+        <h2><a href="{{event['url']}}">{{ event['title'] }}</a></h2>
+        <h3>{{event['place']}}</h3>
+        <p>{{event['source']}}</p>
+        <p>{{event['date']}}</p>
+        <p><img src="{{event['img']}}" />{{event['text']}}</p>
+    </div>
+    {% endfor %}
+</body>
 </html>

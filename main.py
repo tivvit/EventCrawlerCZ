@@ -18,9 +18,9 @@ import os
 import webapp2
 import jinja2
 
+from bizit import bizitParser
+
 from google.appengine.api import users
-from google.appengine.api import urlfetch
-from BeautifulSoup import BeautifulSoup
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -28,38 +28,21 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     autoescape=False)
 
 class MainHandler(webapp2.RequestHandler):
+    template_values = {}
+
     def get(self):
         user = users.get_current_user()
 
-        url = "http://google.com"
-        result = urlfetch.fetch(url)
-        if result.status_code == 200:
-            content = self.getEncodedContent(result)
-
-
-        soup = BeautifulSoup(content)
+        bizit = bizitParser()
+        self.template_values['events'] = bizit.structuredEvents
 
         if user:
-            template_values = {
-                'user': user.nickname(),
-                'loaded': content,
-                'links': soup.findAll('a')
-            }
+            self.template_values['user'] = user.nickname()
         else:
             self.redirect(users.create_login_url(self.request.uri))
 
-
         template = JINJA_ENVIRONMENT.get_template('index.html')
-        self.response.write(template.render(template_values))
-
-    def getEncodedContent(self, result):
-        '''
-            bleh
-        '''
-        content_type = result.headers['Content-Type'] # figure out what you just fetched
-        ctype, charset = content_type.split(';')
-        encoding = charset[len(' charset='):] # get the encoding
-        return result.content.decode(encoding) # now you have unicode
+        self.response.write(template.render(self.template_values))
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler)
