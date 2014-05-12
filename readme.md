@@ -1,7 +1,6 @@
 - GAE application
 - BeautifulSoap for parsing
 
-
 normalizes event data from these pages
 - [bizit.cz](http://bizit.cz)
 - [srazy.info](http://srazy.info)
