@@ -1,10 +1,11 @@
 __author__ = 'tivvit'
 
-import EncodingHelper
+from datetime import datetime
 
 from google.appengine.api import urlfetch
-from datetime import datetime
-from lib import BeautifulSoup
+
+from lib import BeautifulSoup, EncodingHelper
+
 
 class srazyinfoParser():
     structuredEvents = []
