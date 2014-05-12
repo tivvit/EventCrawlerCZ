@@ -50,7 +50,7 @@ class MainHandler(webapp2.RequestHandler):
         else:
             self.redirect(users.create_login_url(self.request.uri))
 
-        template = JINJA_ENVIRONMENT.get_template('index.html')
+        template = JINJA_ENVIRONMENT.get_template('templates/index.html')
         self.response.write(template.render(self.template_values))
 
 class CrawlHandler(webapp2.RedirectHandler):
