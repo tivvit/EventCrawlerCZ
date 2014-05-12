@@ -14,17 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import cgi
 import os
 import webapp2
 import jinja2
 
-from bizit import bizitParser
-from srazyinfo import srazyinfoParser
+from workers import bizitParser
+from workers import srazyinfoParser
+
 from google.appengine.ext import ndb
 from google.appengine.api import users
 from event import Event
-from datetime import datetime
+
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
